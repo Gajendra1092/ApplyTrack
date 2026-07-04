@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Applications",
+  "version": "1.0",
+  "description": "Track filled applications",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "tabs"
+  ],
+  "host_permissions": [
+    "http://localhost/*",
+    "https://*/*"
+  ],
+  "action": {
+    "default_icon": "hello.png",
+    "default_popup": "index.html"
+  }
+}
