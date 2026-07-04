@@ -17,10 +17,9 @@ document.getElementById('runBtn').addEventListener('click', async () => {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'extractedData') {
-    console.log('Received data in popup:', message.data);
-    document.body.innerHTML = `
-      <h3>Extracted Data</h3>
-      <pre>${JSON.stringify(message.data, null, 2)}</pre>
-    `;
+    const values = message.data.result
+    document.getElementById("company").value = values.Company_name;
+    document.getElementById("role").value = values.Role;
+    document.getElementById("resume").value = values.Resume_name; 
   }
 });

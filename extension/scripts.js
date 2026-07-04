@@ -1,11 +1,11 @@
-async function callAPI(cleaned_text) {
+async function callAPI(content) {
   try {
     const response = await fetch('http://127.0.0.1:8000/handle-content', {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain'
       },
-      body: cleaned_text
+      body: content
     });
 
     const data = await response.json();
@@ -18,8 +18,7 @@ async function callAPI(cleaned_text) {
 
 (async () => {
   const content = document.body.innerText;
-  const cleaned = content.replace(/[^a-zA-Z0-9_.\s]/g, '');
-  const response = await callAPI(cleaned);
+  const response = await callAPI(content);
 
   if (response) {
     chrome.runtime.sendMessage({
