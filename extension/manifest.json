@@ -9,8 +9,7 @@
     "tabs"
   ],
   "host_permissions": [
-    "http://localhost/*",
-    "https://*/*"
+    "http://*/*"
   ],
   "action": {
     "default_icon": "hello.png",
