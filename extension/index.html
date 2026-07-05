@@ -4,29 +4,110 @@
     <meta charset="UTF-8" />
     <title>Application Collector</title>
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        padding: 12px;
-        min-width: 180px;
+      :root {
+        color-scheme: dark;
+        font-family: Inter, Arial, Helvetica, sans-serif;
       }
+
+      body {
+        margin: 0;
+        padding: 12px;
+        min-width: 240px;
+        background: #0f172a;
+        color: #e2e8f0;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .panel {
+        background: #111827;
+        border: 1px solid #1f2937;
+        border-radius: 8px;
+        padding: 10px;
+      }
+
+      h3 {
+        margin: 0 0 4px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 0 0 8px;
+        font-size: 12px;
+        color: #94a3b8;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      label {
+        font-size: 11px;
+        color: #cbd5e1;
+      }
+
+      input {
+        padding: 8px;
+        border: 1px solid #334155;
+        border-radius: 6px;
+        background: #0b1220;
+        color: #f8fafc;
+        font-size: 13px;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: #60a5fa;
+      }
+
       button {
         width: 100%;
-        padding: 8px;
+        padding: 8px 10px;
+        border: none;
+        border-radius: 6px;
         cursor: pointer;
+        font-weight: 600;
+        font-size: 13px;
+      }
+
+      #runBtn {
+        background: #2563eb;
+        color: white;
+      }
+
+      #saveBtn {
+        background: #14b8a6;
+        color: white;
+        margin-top: 2px;
       }
     </style>
   </head>
   <body>
-    <button id="runBtn">Run on this page</button>
-    <form id="saveForm">
-        <label>Company</label>
-        <input type="text" id="company" name="name">
-        <label>Role</label>
-        <input type="text" id="role" name="Role">
-        <label>Resume_name</label>
-        <input type="text" id="resume" name="Resume_name">
-        <button type="submit">Save</button>
-    </form>
+    <div class="container">
+      <div class="panel">
+        <button id="runBtn" type="button">Run</button>
+      </div>
+
+      <form id="saveForm" class="panel">
+        <label for="company">Company</label>
+        <input type="text" id="company" name="company" placeholder="Company name" />
+
+        <label for="role">Role</label>
+        <input type="text" id="role" name="role" placeholder="Job role" />
+
+        <label for="resume">Resume</label>
+        <input type="text" id="resume" name="resume" placeholder="Resume file" />
+
+        <button id="saveBtn" type="submit">Save</button>
+      </form>
+    </div>
 
     <script src="popup.js"></script>
   </body>
