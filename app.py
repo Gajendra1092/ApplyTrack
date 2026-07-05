@@ -23,10 +23,10 @@ app.add_middleware(
 )
 
 class responseSchema(BaseModel):
-    Company_name: str = Field(description = "Name of company on application form")
-    Role: str = Field(description = "Role for which the application form is to be filled.")
-    Resume_name: str = Field(description = "Name of the resume submitted")
-    Date_Time: str = Field(description = "Today's date and time")
+    Company_name: str = Field("NA", description="Name of company on application form")
+    Role: str = Field("NA", description="Role for which the application form is to be filled.")
+    Resume_name: str = Field("NA", description="Name of the resume submitted")
+    # Date_Time: str = Field(description = "Today's date and time")
 
 # initialisation
 model = ChatGoogleGenerativeAI(
