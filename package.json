@@ -1,0 +1,26 @@
+{
+  "name": "applicationcollector",
+  "version": "1.0.0",
+  "description": "Extension which extracts job application details with AI (e.g. Company Name, Role, Resume) and stores it. To make tracking of Job Applications organized.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx @tailwindcss/cli -i ./extension/styles/input.css -o ./extension/styles/output.css --watch",
+    "build": "npx @tailwindcss/cli -i ./extension/styles/input.css -o ./extension/styles/output.css --minify"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gajendra1092/ApplyTrack.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Gajendra1092/ApplyTrack/issues"
+  },
+  "homepage": "https://github.com/Gajendra1092/ApplyTrack#readme",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.3.2",
+    "tailwindcss": "^4.3.2"
+  }
+}
