@@ -3,112 +3,78 @@
   <head>
     <meta charset="UTF-8" />
     <title>Application Collector</title>
-    <style>
-      :root {
-        color-scheme: dark;
-        font-family: Inter, Arial, Helvetica, sans-serif;
-      }
-
-      body {
-        margin: 0;
-        padding: 12px;
-        min-width: 240px;
-        background: #0f172a;
-        color: #e2e8f0;
-      }
-
-      .container {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .panel {
-        background: #111827;
-        border: 1px solid #1f2937;
-        border-radius: 8px;
-        padding: 10px;
-      }
-
-      h3 {
-        margin: 0 0 4px;
-        font-size: 14px;
-        font-weight: 600;
-      }
-
-      p {
-        margin: 0 0 8px;
-        font-size: 12px;
-        color: #94a3b8;
-      }
-
-      form {
-        display: flex;
-        flex-direction: column;
-        gap: 7px;
-      }
-
-      label {
-        font-size: 11px;
-        color: #cbd5e1;
-      }
-
-      input {
-        padding: 8px;
-        border: 1px solid #334155;
-        border-radius: 6px;
-        background: #0b1220;
-        color: #f8fafc;
-        font-size: 13px;
-      }
-
-      input:focus {
-        outline: none;
-        border-color: #60a5fa;
-      }
-
-      button {
-        width: 100%;
-        padding: 8px 10px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 600;
-        font-size: 13px;
-      }
-
-      #runBtn {
-        background: #2563eb;
-        color: white;
-      }
-
-      #saveBtn {
-        background: #14b8a6;
-        color: white;
-        margin-top: 2px;
-      }
-    </style>
+    <link rel="stylesheet" href="styles/output.css">
   </head>
-  <body>
-    <div class="container">
-      <div class="panel">
-        <button id="runBtn" type="button">Run</button>
+  <body class="bg-black text-slate-100 p-4 min-w-60">
+    <div class="space-y-4">
+      <!-- Header -->
+      <div class = "flex justify-between">
+      <div class="mb-6">
+        <h1 class="font-space text-xl font-bold w-fit bg-white bg-clip-text text-transparent">
+          Application Tracker
+        </h1>
       </div>
 
-      <form id="saveForm" class="panel">
-        <label for="company">Company</label>
-        <input type="text" id="company" name="company" placeholder="Company name" />
+      <!-- Run Button Section -->
+        <button 
+          id="runBtn" 
+          type="button"
+          class="w-fit h-fit py-1 px-4 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-space rounded-lg transition-all duration-200 shadow-lg active:scale-95"
+        >
+          Run
+        </button>
+      </div>
+      <!-- Form Section -->
+      <form id="saveForm">
+        <!-- Company Field -->
+        <div class="space-y-1.5">
+          <label for="company" class="text-xs font-space text-slate-300 uppercase tracking-wide">
+            Company
+          </label>
+          <input 
+            type="text" 
+            id="company" 
+            name="company"  
+            class="w-full px-3 py-2 bg-slate-900/50 border border-slate-600 rounded-lg text-slate-100 focus:border-white-300 focus:outline-none focus:ring-2 focus:ring-white-500/20 transition-all duration-200"
+          />
+        </div>
 
-        <label for="role">Role</label>
-        <input type="text" id="role" name="role" placeholder="Job role" />
+        <!-- Role Field -->
+        <div class="space-y-1.5">
+          <label for="role" class="text-xs font-space text-slate-300 uppercase tracking-wide">
+            Role
+          </label>
+          <input 
+            type="text" 
+            id="role" 
+            name="role" 
+            class="w-full px-3 py-2 bg-slate-900/50 border border-slate-600 rounded-lg text-slate-100 focus:border-white-300 focus:outline-none focus:ring-2 focus:ring-white-500/20 transition-all duration-200"
+          />
+        </div>
 
-        <label for="resume">Resume</label>
-        <input type="text" id="resume" name="resume" placeholder="Resume file" />
+        <!-- Resume Field -->
+        <div class="space-y-1.5">
+          <label for="resume" class="text-xs font-semibold text-slate-300 uppercase tracking-wide">
+            Resume
+          </label>
+          <input 
+            type="text" 
+            id="resume" 
+            name="resume" 
+            class="w-full px-3 py-2 bg-slate-900/50 border border-slate-600 rounded-lg text-slate-100 focus:border-white-300 focus:outline-none focus:ring-2 focus:ring-white-500/20 transition-all duration-200"
+          />
+        </div>
 
-        <button id="saveBtn" type="submit">Save</button>
+        <!-- Submit Button -->
+        <button 
+          id="saveBtn" 
+          type="submit"
+          class="w-full py-2.5 px-4 mt-4 font-space bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-lg active:scale-95"
+        >
+          ✓ Save Application
+        </button>
       </form>
-    </div>
 
-    <script src="script/sidepanel.js"></script>
+    <script src="scripts/sidePanel.js"></script>
   </body>
 </html>
