@@ -8,7 +8,7 @@ document.getElementById('runBtn').addEventListener('click', async () => {
   try {
     await chrome.scripting.executeScript({
       target: { tabId: tab.id },
-      files: ['scripts.js']
+      files: ['scripts/scripts.js']
     });
   } catch (error) {
     console.error('Failed to run script from popup:', error);
