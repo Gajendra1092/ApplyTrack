@@ -53,16 +53,16 @@ document.getElementById('saveForm').addEventListener('submit', async (event) => 
         left: 50%;
         transform: translateX(-50%);
         z-index: 9999;
-        background: linear-gradient(135deg, #ffffff 0%, #2eb244 100%);
-        padding: 12px 24px;
+        background: rgba(0, 0, 0, 0.89);
+        padding: 7px 15px;
         border-radius: 8px;
         border: none;
         color: white;
         text-align: center;
         width: fit-content;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        box-shadow: 0 1px 8px rgba(237, 237, 237, 0.2);
       `;
-      cardDiv.innerHTML = '<h3 style="margin: 0; font-size: 16px; font-weight: 600;">Done</h3>';
+      cardDiv.innerHTML = '<h3 style="margin: 0; font-size: 16px; font-weight: 600;">Done!</h3>';
       
       document.body.insertBefore(cardDiv, document.body.firstChild);
       
