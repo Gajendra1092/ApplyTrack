@@ -34,7 +34,7 @@ document.getElementById('saveForm').addEventListener('submit', async (event) => 
     Role: document.getElementById('role').value,
     Resume_name: document.getElementById('resume').value,
   };
-
+  
   try {
     const response = await fetch('http://127.0.0.1:8000/store-to-db', {
       method: 'POST',
@@ -45,36 +45,31 @@ document.getElementById('saveForm').addEventListener('submit', async (event) => 
     const result = await response.json().catch(() => null);
 
     if (response.ok && result === true) {
-      const successHtml = `<!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="UTF-8" />
-            <style>
-              body {
-                font-family: Arial, sans-serif;
-                padding: 16px;
-                min-width: 220px;
-                background: #f7fdf8;
-              }
-              .card {
-                border: 1px solid #2e7d32;
-                border-radius: 8px;
-                padding: 12px;
-                color: #1b5e20;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="card">
-              <h3>Saved successfully</h3>
-              <p>Your application was stored.</p>
-            </div>
-          </body>
-        </html>`;
-
-      document.open();
-      document.write(successHtml);
-      document.close();
+      // Create and show success card for 2 seconds
+      const cardDiv = document.createElement('div');
+      cardDiv.style.cssText = `
+        position: fixed;
+        top: 25px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        background: linear-gradient(135deg, #ffffff 0%, #2eb244 100%);
+        padding: 12px 24px;
+        border-radius: 8px;
+        border: none;
+        color: white;
+        text-align: center;
+        width: fit-content;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      `;
+      cardDiv.innerHTML = '<h3 style="margin: 0; font-size: 16px; font-weight: 600;">Done</h3>';
+      
+      document.body.insertBefore(cardDiv, document.body.firstChild);
+      
+      document.getElementById('saveForm').reset();
+      // Remove after 2 seconds
+      setTimeout(() => cardDiv.remove(), 2000);
+      
       return;
     }
     

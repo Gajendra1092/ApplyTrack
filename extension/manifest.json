@@ -17,9 +17,10 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_icon": "hello.png"
+    "default_icon": "assets/LOGO.png",
+    "default_title": "My Applications" 
   },
   "side_panel": {
-        "default_path": "index.html"
+        "default_path": "sidePanel.html"
   }
 }

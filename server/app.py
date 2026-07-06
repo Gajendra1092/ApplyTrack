@@ -59,7 +59,7 @@ agent = create_agent(
                     "Role": "",
                     "Resume_name": "",
                 }
-                If any value is missing, use empty string.
+                If any value is missing, return the string "NA".
             """
 )
 
