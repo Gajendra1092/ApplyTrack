@@ -14,10 +14,10 @@
     "https://*/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "scripts/background.js"
   },
   "action": {
-    "default_icon": "assets/LOGO.png",
+    "default_icon": "assets/logo/LOGO.png",
     "default_title": "My Applications" 
   },
   "side_panel": {
