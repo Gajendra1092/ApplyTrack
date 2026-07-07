@@ -128,6 +128,19 @@ async def storingInDb(request: Request):
         print(err)
 
     return True
+
+@app.get("/get_data")
+async def get_data_from_db():
+    with sqlite3.connect("applications.db") as conn:
+        conn.row_factory = sqlite3.Row  # Used to return rows as a dict 
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM applications")
+        rows = cursor.fetchall()
+
+    return [dict(row) for row in rows] # returns list of dict
+
+# Needing pagination later
     
     
     
