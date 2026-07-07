@@ -83,23 +83,21 @@ def storeInSQLite(data):
             Company_name TEXT,
             Role TEXT,
             Resume_name TEXT,
-            Date_Time TEXT
-        )
+            Created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
     """)
     
     cursor.execute("""
         INSERT INTO applications (
             Company_name,
             Role,
-            Resume_name,
-            Date_Time
+            Resume_name
         )
-        VALUES (?, ?, ?, ?)
+        VALUES (?, ?, ?)
     """, (
         data["Company_name"],
         data["Role"],
         data["Resume_name"],
-        data["Date_Time"]
         )
     )
 
@@ -117,8 +115,6 @@ async def read_root(request: Request):
 async def storingInDb(request: Request):
     data = await request.body()
     dict_data = json.loads(data)
-    DateTime = datetime.now().strftime("%d/%m/%Y %I:%M %p")
-    dict_data["Date_Time"] = str(DateTime)
 
     try:
         print("storing in db")
@@ -135,12 +131,13 @@ async def get_data_from_db():
         conn.row_factory = sqlite3.Row  # Used to return rows as a dict 
         cursor = conn.cursor()
 
-        cursor.execute("SELECT * FROM applications")
+        cursor.execute("SELECT * FROM applications ORDER BY Created_at DESC;")
         rows = cursor.fetchall()
 
     return [dict(row) for row in rows] # returns list of dict
 
 # Needing pagination later
+
     
     
     
