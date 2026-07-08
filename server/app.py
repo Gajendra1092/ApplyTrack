@@ -126,17 +126,34 @@ async def storingInDb(request: Request):
     return True
 
 @app.get("/get_data")
-async def get_data_from_db():
+async def get_data(page: int = 1, limit: int = 10):
+
+    offset = (page - 1) * limit
+
     with sqlite3.connect("applications.db") as conn:
         conn.row_factory = sqlite3.Row  # Used to return rows as a dict 
         cursor = conn.cursor()
 
-        cursor.execute("SELECT * FROM applications ORDER BY Created_at DESC;")
+        # Total records
+        cursor.execute("SELECT COUNT(*) FROM applications")
+        total = cursor.fetchone()[0]  # extract data from tuple : (count,) --> count
+
+        cursor.execute("""
+            SELECT * FROM applications
+            ORDER BY Created_at DESC
+            LIMIT ? OFFSET ?
+            """,(limit, offset))
+        
         rows = cursor.fetchall()
 
-    return [dict(row) for row in rows] # returns list of dict
+    return {
+        "applications": [dict(row) for row in rows],  # list of dict
+        "total": total,
+        "page": page,
+        "limit": limit
+        } 
 
-# Needing pagination later
+
 
     
     
