@@ -54,21 +54,51 @@ async function renderTable(data) {
   const nextDisabled = currentPage === totalPages;
 
   const pages = [];
-  for (let i = 1; i <= Math.min(3, totalPages); i++) {
-    pages.push(i);
-  }
 
-  if (currentPage > 3 && currentPage < totalPages) {
-    pages.push("...");
-    pages.push(currentPage);
-  }
+// Case 1: Show all pages if total pages are 5 or less
+if (totalPages <= 5) {
 
-  if (totalPages > 3) {
-    if (currentPage < totalPages - 1) {
-      pages.push("...");
+    for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
     }
+
+}
+
+// Case 2: Current page is near the beginning
+else if (currentPage <= 4) {
+
+    pages.push(1, 2, 3, 4);
+    pages.push("...");
     pages.push(totalPages);
-  }
+
+}
+
+// Case 3: Current page is near the end
+else if (currentPage >= totalPages - 3) {
+
+    pages.push(1);
+    pages.push("...");
+
+    for (let i = totalPages - 3; i <= totalPages; i++) {
+        pages.push(i);
+    }
+
+}
+
+// Case 4: Current page is somewhere in the middle
+else {
+
+    pages.push(1);
+    pages.push("...");
+
+    pages.push(currentPage - 1);
+    pages.push(currentPage);
+    pages.push(currentPage + 1);
+
+    pages.push("...");
+    pages.push(totalPages);
+
+}
 
   footer.innerHTML += `<li>
                     <button id="prev-page" ${prevDisabled ? "disabled" : ""} class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${prevDisabled ? "opacity-50 cursor-not-allowed" : ""}">
