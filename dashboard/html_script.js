@@ -47,8 +47,8 @@ async function renderTable(data) {
 
   tbody.innerHTML = rows;
 
-  const footer = document.getElementById("footer");
-  footer.innerHTML = "";
+  const right_footer = document.getElementById("right-footer");
+  right_footer.innerHTML = "";
 
   const prevDisabled = currentPage === 1;
   const nextDisabled = currentPage === totalPages;
@@ -100,7 +100,7 @@ else {
 
 }
 
-  footer.innerHTML += `<li>
+  right_footer.innerHTML += `<li>
                     <button id="prev-page" ${prevDisabled ? "disabled" : ""} class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${prevDisabled ? "opacity-50 cursor-not-allowed" : ""}">
                         <span class="sr-only">Previous</span>
                         <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -110,7 +110,7 @@ else {
             </li>`;
   pages.forEach((page) => {
     if (page === "...") {
-      footer.innerHTML += `<li>
+      right_footer.innerHTML += `<li>
                         <button class="flex items-center justify-center text-sm py-2 px-3 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">...</button>
             </li>`;
     } else {
@@ -120,13 +120,13 @@ else {
           ? "text-black-500 font-bold bg-gray-100"
           : "text-gray-500 bg-white";
 
-      footer.innerHTML += `<li>
+      right_footer.innerHTML += `<li>
                         <button class="page-btn ${activeClass} flex items-center justify-center text-sm py-2 px-3 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white" data-page="${page}">${page}</button>
             </li>`;
     }
   });
 
-  footer.innerHTML += `<li>
+  right_footer.innerHTML += `<li>
                     <button id="next-page" ${nextDisabled ? "disabled" : ""} class="flex items-center justify-center h-full py-1.5 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${nextDisabled ? "opacity-50 cursor-not-allowed" : ""}">
                         <span class="sr-only" >Next</span>
                         <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -136,6 +136,15 @@ else {
             </li>
             
             `;
+
+  const left_footer = document.getElementById("left-footer");
+  left_footer.innerHTML += `
+        Showing
+        <span class="font-semibold text-gray-900 dark:text-white">${((currentPage-1)*data.limit)+1}-${Math.min(data.total,currentPage*data.limit)}</span>
+        of
+        <span class="font-semibold text-gray-900 dark:text-white">${data.total}</span>
+  
+  `
 
   document.getElementById("next-page").addEventListener("click", () => {
     if (currentPage < totalPages) {
