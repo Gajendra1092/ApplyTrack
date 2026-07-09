@@ -2,8 +2,10 @@ let currentPage = 1;
 let totalPages;
 let limit;
 let totalRecords;
+let searchTimeout;
+let searchQuery = "";
 
-function addingEventListners(){
+function addingEventListeners(){
   document.getElementById("next-page").addEventListener("click", () => {
     if (currentPage < totalPages) {
       loadData(currentPage + 1);
@@ -24,9 +26,11 @@ function addingEventListners(){
   });
 }
 
-async function renderTableFooter(){
-      const right_footer = document.getElementById("right-footer");
+function renderTableFooter(){
+  const right_footer = document.getElementById("right-footer");
+  const left_footer = document.getElementById("left-footer");
   right_footer.innerHTML = "";
+  left_footer.innerHTML = "";
 
   const prevDisabled = currentPage === 1;
   const nextDisabled = currentPage === totalPages;
@@ -89,7 +93,7 @@ else {
   pages.forEach((page) => {
     if (page === "...") {
       right_footer.innerHTML += `<li>
-                        <button class="flex items-center justify-center text-sm py-2 px-3 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">...</button>
+                        <span class="flex items-center justify-center text-sm py-2 px-3 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">...</span>
             </li>`;
     } else {
       // Highlight the selected button
@@ -115,7 +119,7 @@ else {
             
             `;
 
-  const left_footer = document.getElementById("left-footer");
+
   left_footer.innerHTML += `
         Showing
         <span class="font-semibold text-gray-900 dark:text-white">${((currentPage-1)*limit)+1}-${Math.min(totalRecords,currentPage*limit)}</span>
@@ -123,8 +127,8 @@ else {
         <span class="font-semibold text-gray-900 dark:text-white">${totalRecords}</span>`
 }
 
-async function renderTable(data) {
-  
+function renderTable(data) {
+
   const applications = data.applications;
   const tbody = document.getElementById("table-body");
 
@@ -171,14 +175,31 @@ async function renderTable(data) {
 
   
   renderTableFooter()
-  addingEventListners()
+  addingEventListeners()
 
+}
+
+function searchInput(){
+    const searchInput = document.getElementById("search-input");
+    searchInput.addEventListener("input", (e) => {
+
+    clearTimeout(searchTimeout);
+
+    searchTimeout = setTimeout(() => {
+
+        searchQuery = e.target.value.trim();
+
+        loadData(1);
+
+    }, 300);
+
+});
 }
 
 async function loadData(page = 1) {
   currentPage = page;
   const response = await fetch(
-    `http://127.0.0.1:8000/get_data?page=${page}&limit=10`,
+    `http://127.0.0.1:8000/get_data?page=${page}&limit=10&search=${encodeURIComponent(searchQuery)}`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -192,3 +213,4 @@ async function loadData(page = 1) {
 }
 
 loadData(1);
+searchInput();

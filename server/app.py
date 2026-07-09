@@ -126,23 +126,47 @@ async def storingInDb(request: Request):
     return True
 
 @app.get("/get_data")
-async def get_data(page: int = 1, limit: int = 10):
+async def get_data(page: int = 1, limit: int = 10, search: str = ""):
 
     offset = (page - 1) * limit
+    search = f"%{search}%"
 
     with sqlite3.connect("applications.db") as conn:
         conn.row_factory = sqlite3.Row  # Used to return rows as a dict 
         cursor = conn.cursor()
 
         # Total records
-        cursor.execute("SELECT COUNT(*) FROM applications")
+        cursor.execute(
+                """SELECT COUNT(*) FROM applications WHERE
+                    Company_name LIKE ?
+                    OR Role LIKE ?
+                    OR Resume_name LIKE ?
+                """,(
+                    search,
+                    search,
+                    search
+                    )
+                )
+                
         total = cursor.fetchone()[0]  # extract data from tuple : (count,) --> count
 
         cursor.execute("""
-            SELECT * FROM applications
-            ORDER BY Created_at DESC
-            LIMIT ? OFFSET ?
-            """,(limit, offset))
+                SELECT *
+                FROM applications
+                WHERE
+                    Company_name LIKE ?
+                    OR Role LIKE ?
+                    OR Resume_name LIKE ?
+                ORDER BY Created_at DESC
+                LIMIT ? OFFSET ?
+            """, (
+                search,
+                search,
+                search,
+                limit,
+                offset
+                )
+        )
         
         rows = cursor.fetchall()
 
