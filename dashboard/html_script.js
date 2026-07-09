@@ -1,53 +1,31 @@
 let currentPage = 1;
 let totalPages;
+let limit;
+let totalRecords;
 
-async function renderTable(data) {
-  const applications = data.applications;
-  totalPages = Math.ceil(data.total / data.limit);
-  const tbody = document.getElementById("table-body");
-
-  tbody.innerHTML = "";
-
-  let rows = "";
-
-  applications.forEach((app) => {
-    const date = new Date(app.Created_at);
-
-    const formatted = date.toLocaleString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-
-    rows += `
-
-        <tr class="border-b dark:border-gray-700">
-
-            <td class="px-4 py-3">${app.Company_name}</td>
-
-            <td class="px-4 py-3">${app.Role}</td>
-
-            <td class="px-4 py-3">${formatted}</td>
-
-            <td class="px-4 py-3">${app.Resume_name}</td>
-
-            <td class="px-4 py-3">
-
-                <button>Edit</button>
-
-            </td>
-
-        </tr>
-
-        `;
+function addingEventListners(){
+  document.getElementById("next-page").addEventListener("click", () => {
+    if (currentPage < totalPages) {
+      loadData(currentPage + 1);
+    }
   });
 
-  tbody.innerHTML = rows;
+  document.getElementById("prev-page").addEventListener("click", () => {
+    if (currentPage > 1) {
+      loadData(currentPage - 1);
+    }
+  });
 
-  const right_footer = document.getElementById("right-footer");
+  document.querySelectorAll(".page-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+      const page = Number(button.dataset.page);
+      loadData(page);
+    });
+  });
+}
+
+async function renderTableFooter(){
+      const right_footer = document.getElementById("right-footer");
   right_footer.innerHTML = "";
 
   const prevDisabled = currentPage === 1;
@@ -114,7 +92,7 @@ else {
                         <button class="flex items-center justify-center text-sm py-2 px-3 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">...</button>
             </li>`;
     } else {
-      // Highlighting the selected button
+      // Highlight the selected button
       const activeClass =
         page === currentPage
           ? "text-black-500 font-bold bg-gray-100"
@@ -140,30 +118,61 @@ else {
   const left_footer = document.getElementById("left-footer");
   left_footer.innerHTML += `
         Showing
-        <span class="font-semibold text-gray-900 dark:text-white">${((currentPage-1)*data.limit)+1}-${Math.min(data.total,currentPage*data.limit)}</span>
+        <span class="font-semibold text-gray-900 dark:text-white">${((currentPage-1)*limit)+1}-${Math.min(totalRecords,currentPage*limit)}</span>
         of
-        <span class="font-semibold text-gray-900 dark:text-white">${data.total}</span>
+        <span class="font-semibold text-gray-900 dark:text-white">${totalRecords}</span>`
+}
+
+async function renderTable(data) {
   
-  `
+  const applications = data.applications;
+  const tbody = document.getElementById("table-body");
 
-  document.getElementById("next-page").addEventListener("click", () => {
-    if (currentPage < totalPages) {
-      loadData(currentPage + 1);
-    }
-  });
+  tbody.innerHTML = "";
 
-  document.getElementById("prev-page").addEventListener("click", () => {
-    if (currentPage > 1) {
-      loadData(currentPage - 1);
-    }
-  });
+  let rows = "";
 
-  document.querySelectorAll(".page-btn").forEach((button) => {
-    button.addEventListener("click", () => {
-      const page = Number(button.dataset.page);
-      loadData(page);
+  applications.forEach((app) => {
+    const date = new Date(app.Created_at);
+
+    const formatted = date.toLocaleString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
     });
+
+    rows += `
+
+        <tr class="border-b dark:border-gray-700">
+
+            <td class="px-4 py-3">${app.Company_name}</td>
+
+            <td class="px-4 py-3">${app.Role}</td>
+
+            <td class="px-4 py-3">${formatted}</td>
+
+            <td class="px-4 py-3">${app.Resume_name}</td>
+
+            <td class="px-4 py-3">
+
+                <button>Edit</button>
+
+            </td>
+
+        </tr>
+
+        `;
   });
+
+  tbody.innerHTML = rows;
+
+  
+  renderTableFooter()
+  addingEventListners()
+
 }
 
 async function loadData(page = 1) {
@@ -176,7 +185,9 @@ async function loadData(page = 1) {
     },
   );
   const data = await response.json();
-  console.log("totalPages:", totalPages);
+  totalPages = Math.ceil(data.total / data.limit);
+  limit = data.limit;
+  totalRecords = data.total;
   await renderTable(data);
 }
 
