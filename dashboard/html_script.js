@@ -1,13 +1,16 @@
-let currentPage = 1;
-let totalPages;
-let limit = 2;
-let totalRecords;
-let searchTimeout;
-let searchQuery = "";
-let resume_version = "";
+const state = {
+  currentPage: 1,
+  totalPages: 0,
+  limit: 2,
+  totalRecords: 0,
+  searchTimeout: null,
+  searchQuery: "",
+  resume_version: ""
+};
 
 function setupStaticEventListeners(){
-    document.getElementById("addButton").addEventListener("click", () => {
+
+  document.getElementById("addButton").addEventListener("click", () => {
     document.getElementById("modal").classList.remove("hidden");
   });
 
@@ -15,7 +18,7 @@ function setupStaticEventListeners(){
     document.getElementById("modal").classList.add("hidden");
   });
 
-    const form = document.getElementById("addDetailsForm");
+  const form = document.getElementById("addDetailsForm");
 
   form.addEventListener("submit", () => {
     e.preventDefault();
@@ -30,25 +33,26 @@ function setupStaticEventListeners(){
 
   const searchInput = document.getElementById("search-input");
   searchInput.addEventListener("input", (e) => {
-    clearTimeout(searchTimeout);
+    clearTimeout(state.searchTimeout);
 
-    searchTimeout = setTimeout(() => {
-      searchQuery = e.target.value.trim();
+    state.searchTimeout = setTimeout(() => {
+      state.searchQuery = e.target.value.trim();
 
       loadData(1);
     }, 300);
   });
 }
+
 function addingEventListeners() {
   document.getElementById("next-page").addEventListener("click", () => {
-    if (currentPage < totalPages) {
-      loadData(currentPage + 1);
+    if (state.currentPage < state.totalPages) {
+      loadData(state.currentPage + 1);
     }
   });
 
   document.getElementById("prev-page").addEventListener("click", () => {
-    if (currentPage > 1) {
-      loadData(currentPage - 1);
+    if (state.currentPage > 1) {
+      loadData(state.currentPage - 1);
     }
   });
 
@@ -63,7 +67,7 @@ function addingEventListeners() {
   document.querySelectorAll(".resumeFilter-btn").forEach((button) => {
     button.addEventListener("click", () => {
       const filter_resume_name = button.dataset.rName;
-      resume_version = filter_resume_name;
+      state.resume_version = filter_resume_name;
       loadData(1);
     });
   });
@@ -125,31 +129,31 @@ function renderTableFooter() {
   right_footer.innerHTML = "";
   left_footer.innerHTML = "";
 
-  const prevDisabled = currentPage === 1;
-  const nextDisabled = currentPage === totalPages;
+  const prevDisabled = state.currentPage === 1;
+  const nextDisabled = state.currentPage === state.totalPages;
 
   const pages = [];
 
   // Case 1: Show all pages if total pages are 5 or less
-  if (totalPages <= 5) {
-    for (let i = 1; i <= totalPages; i++) {
+  if (state.totalPages <= 5) {
+    for (let i = 1; i <= state.totalPages; i++) {
       pages.push(i);
     }
   }
 
   // Case 2: Current page is near the beginning
-  else if (currentPage <= 4) {
+  else if (state.currentPage <= 4) {
     pages.push(1, 2, 3, 4);
     pages.push("...");
-    pages.push(totalPages);
+    pages.push(state.totalPages);
   }
 
   // Case 3: Current page is near the end
-  else if (currentPage >= totalPages - 3) {
+  else if (state.currentPage >= state.totalPages - 3) {
     pages.push(1);
     pages.push("...");
 
-    for (let i = totalPages - 3; i <= totalPages; i++) {
+    for (let i = state.totalPages - 3; i <= state.totalPages; i++) {
       pages.push(i);
     }
   }
@@ -159,12 +163,12 @@ function renderTableFooter() {
     pages.push(1);
     pages.push("...");
 
-    pages.push(currentPage - 1);
-    pages.push(currentPage);
-    pages.push(currentPage + 1);
+    pages.push(state.currentPage - 1);
+    pages.push(state.currentPage);
+    pages.push(state.currentPage + 1);
 
     pages.push("...");
-    pages.push(totalPages);
+    pages.push(state.totalPages);
   }
 
   right_footer.innerHTML += `<li>
@@ -183,7 +187,7 @@ function renderTableFooter() {
     } else {
       // Highlight the selected button
       const activeClass =
-        page === currentPage
+        page === state.currentPage
           ? "text-black-500 font-bold bg-gray-100"
           : "text-gray-500 bg-white";
 
@@ -206,9 +210,9 @@ function renderTableFooter() {
 
   left_footer.innerHTML += `
         Showing
-        <span class="font-semibold text-gray-900 dark:text-white">${(currentPage - 1) * limit + 1}-${Math.min(totalRecords, currentPage * limit)}</span>
+        <span class="font-semibold text-gray-900 dark:text-white">${(state.currentPage - 1) * state.limit + 1}-${Math.min(state.totalRecords, state.currentPage * state.limit)}</span>
         of
-        <span class="font-semibold text-gray-900 dark:text-white">${totalRecords}</span>`;
+        <span class="font-semibold text-gray-900 dark:text-white">${state.totalRecords}</span>`;
 }
 
 function renderTable(data) {
@@ -261,9 +265,9 @@ function renderTable(data) {
 }
 
 async function loadData(page = 1) {
-  currentPage = page;
+  state.currentPage = page;
   const response = await fetch(
-    `http://127.0.0.1:8000/get_data?page=${page}&limit=${limit}&search=${encodeURIComponent(searchQuery)}&filter_resume=${encodeURIComponent(resume_version)}`,
+    `http://127.0.0.1:8000/get_data?page=${page}&limit=${state.limit}&search=${encodeURIComponent(state.searchQuery)}&filter_resume=${encodeURIComponent(state.resume_version)}`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
@@ -273,8 +277,8 @@ async function loadData(page = 1) {
   const data = await response.json();
   const resume_list = data.resume_list;
 
-  totalPages = Math.ceil(data.total / data.limit);
-  totalRecords = data.total;
+  state.totalPages = Math.ceil(data.total / data.limit);
+  state.totalRecords = data.total;
 
   listResume(resume_list);
   renderTable(data);
