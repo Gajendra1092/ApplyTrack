@@ -4,7 +4,9 @@
   "description": "Extension which extracts job application details with AI (e.g. Company Name, Role, Resume) and stores it. To make tracking of Job Applications organized.",
   "main": "index.js",
   "scripts": {
-    "dev": "npx @tailwindcss/cli -i ./extension/styles/input.css -o ./extension/styles/output.css --watch",
+    "dev": "concurrently \"npm run dev:tailwind\" \"npm run dev:server\"",
+    "dev:tailwind": "npx @tailwindcss/cli -i ./extension/styles/input.css -o ./extension/styles/output.css --watch",
+    "dev:server": "cd server && uvicorn app:app --reload",
     "build": "npx @tailwindcss/cli -i ./extension/styles/input.css -o ./extension/styles/output.css --minify"
   },
   "repository": {
@@ -22,5 +24,8 @@
   "dependencies": {
     "@tailwindcss/cli": "^4.3.2",
     "tailwindcss": "^4.3.2"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3"
   }
 }
