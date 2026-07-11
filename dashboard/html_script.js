@@ -1,11 +1,45 @@
 let currentPage = 1;
 let totalPages;
-let limit;
+let limit = 2;
 let totalRecords;
 let searchTimeout;
 let searchQuery = "";
+let resume_version = "";
 
-function addingEventListeners(){
+function setupStaticEventListeners(){
+    document.getElementById("addButton").addEventListener("click", () => {
+    document.getElementById("modal").classList.remove("hidden");
+  });
+
+  document.getElementById("closeModal").addEventListener("click", () => {
+    document.getElementById("modal").classList.add("hidden");
+  });
+
+    const form = document.getElementById("addDetailsForm");
+
+  form.addEventListener("submit", () => {
+    e.preventDefault();
+    const payload = {
+      Company_name: document.getElementById("company_name").value,
+      Role: document.getElementById("role").value,
+      Resume_name: document.getElementById("resume_name").value,
+    };
+
+    saveToDB(payload);
+  });
+
+  const searchInput = document.getElementById("search-input");
+  searchInput.addEventListener("input", (e) => {
+    clearTimeout(searchTimeout);
+
+    searchTimeout = setTimeout(() => {
+      searchQuery = e.target.value.trim();
+
+      loadData(1);
+    }, 300);
+  });
+}
+function addingEventListeners() {
   document.getElementById("next-page").addEventListener("click", () => {
     if (currentPage < totalPages) {
       loadData(currentPage + 1);
@@ -24,9 +58,68 @@ function addingEventListeners(){
       loadData(page);
     });
   });
+
+
+  document.querySelectorAll(".resumeFilter-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+      const filter_resume_name = button.dataset.rName;
+      resume_version = filter_resume_name;
+      loadData(1);
+    });
+  });
+      
 }
 
-function renderTableFooter(){
+// Just add buttons in resume Drop-Down
+function listResume(list){
+    const resumeDropDown = document.getElementById("resumeDropDownList");
+    resumeDropDown.innerHTML = "";
+    resumeDropDown.innerHTML = `
+    <li>
+      <button
+        class="resumeFilter-btn w-full text-left block py-2 px-4 hover:bg-gray-100"
+        data-r-name=""
+      >
+        All Resumes
+      </button>
+    </li>
+  `;
+    list.forEach((ind_resume)=>{
+        resumeDropDown.innerHTML += `<li>
+                      <button
+                        class="resumeFilter-btn w-full text-left block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" data-r-name="${ind_resume}"
+                        >${ind_resume}</button
+                      >
+                    </li>`
+    });
+}
+
+// Store Data in DB
+async function saveToDB(payload) {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/store-to-db", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to save application");
+    }
+
+    document.getElementById("addDetailsForm").reset();
+    document.getElementById("modal").classList.add("hidden");
+
+    loadData(1);
+
+  } catch (error) {
+    console.error("Failed to save form:", error);
+  }
+}
+
+function renderTableFooter() {
   const right_footer = document.getElementById("right-footer");
   const left_footer = document.getElementById("left-footer");
   right_footer.innerHTML = "";
@@ -37,39 +130,32 @@ function renderTableFooter(){
 
   const pages = [];
 
-// Case 1: Show all pages if total pages are 5 or less
-if (totalPages <= 5) {
-
+  // Case 1: Show all pages if total pages are 5 or less
+  if (totalPages <= 5) {
     for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
+      pages.push(i);
     }
+  }
 
-}
-
-// Case 2: Current page is near the beginning
-else if (currentPage <= 4) {
-
+  // Case 2: Current page is near the beginning
+  else if (currentPage <= 4) {
     pages.push(1, 2, 3, 4);
     pages.push("...");
     pages.push(totalPages);
+  }
 
-}
-
-// Case 3: Current page is near the end
-else if (currentPage >= totalPages - 3) {
-
+  // Case 3: Current page is near the end
+  else if (currentPage >= totalPages - 3) {
     pages.push(1);
     pages.push("...");
 
     for (let i = totalPages - 3; i <= totalPages; i++) {
-        pages.push(i);
+      pages.push(i);
     }
+  }
 
-}
-
-// Case 4: Current page is somewhere in the middle
-else {
-
+  // Case 4: Current page is somewhere in the middle
+  else {
     pages.push(1);
     pages.push("...");
 
@@ -79,8 +165,7 @@ else {
 
     pages.push("...");
     pages.push(totalPages);
-
-}
+  }
 
   right_footer.innerHTML += `<li>
                     <button id="prev-page" ${prevDisabled ? "disabled" : ""} class="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${prevDisabled ? "opacity-50 cursor-not-allowed" : ""}">
@@ -119,16 +204,14 @@ else {
             
             `;
 
-
   left_footer.innerHTML += `
         Showing
-        <span class="font-semibold text-gray-900 dark:text-white">${((currentPage-1)*limit)+1}-${Math.min(totalRecords,currentPage*limit)}</span>
+        <span class="font-semibold text-gray-900 dark:text-white">${(currentPage - 1) * limit + 1}-${Math.min(totalRecords, currentPage * limit)}</span>
         of
-        <span class="font-semibold text-gray-900 dark:text-white">${totalRecords}</span>`
+        <span class="font-semibold text-gray-900 dark:text-white">${totalRecords}</span>`;
 }
 
 function renderTable(data) {
-
   const applications = data.applications;
   const tbody = document.getElementById("table-body");
 
@@ -173,44 +256,29 @@ function renderTable(data) {
 
   tbody.innerHTML = rows;
 
-  
-  renderTableFooter()
-  addingEventListeners()
-
-}
-
-function searchInput(){
-    const searchInput = document.getElementById("search-input");
-    searchInput.addEventListener("input", (e) => {
-
-    clearTimeout(searchTimeout);
-
-    searchTimeout = setTimeout(() => {
-
-        searchQuery = e.target.value.trim();
-
-        loadData(1);
-
-    }, 300);
-
-});
+  renderTableFooter();
+  addingEventListeners();
 }
 
 async function loadData(page = 1) {
   currentPage = page;
   const response = await fetch(
-    `http://127.0.0.1:8000/get_data?page=${page}&limit=10&search=${encodeURIComponent(searchQuery)}`,
+    `http://127.0.0.1:8000/get_data?page=${page}&limit=${limit}&search=${encodeURIComponent(searchQuery)}&filter_resume=${encodeURIComponent(resume_version)}`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     },
   );
+
   const data = await response.json();
+  const resume_list = data.resume_list;
+
   totalPages = Math.ceil(data.total / data.limit);
-  limit = data.limit;
   totalRecords = data.total;
-  await renderTable(data);
+
+  listResume(resume_list);
+  renderTable(data);
 }
 
 loadData(1);
-searchInput();
+setupStaticEventListeners();
