@@ -51,7 +51,7 @@
             >
               <button
                 id="addButton"
-                class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-colors"
                 type="button"
               >
                 Add
@@ -83,7 +83,7 @@
                   class="hidden z-10 w-max min-w-44 bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600"
                 >
                   <ul
-                    id = "resumeDropDownList"
+                    id="resumeDropDownList"
                     class="py-1 text-sm text-gray-700 dark:text-gray-200"
                     aria-labelledby="actionsDropdownButton"
                   >
@@ -92,7 +92,8 @@
                 </div>
                 <button
                   id="filterDropdownButton"
-                  data-dropdown-toggle="filterDropdown"
+                  data-dropdown-toggle="DateFilterDropdown"
+                  data-dropdown-placement="bottom-end"
                   class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                   type="button"
                 >
@@ -109,7 +110,7 @@
                       clip-rule="evenodd"
                     />
                   </svg>
-                  Filter
+                  Date Filter
                   <svg
                     class="-mr-1 ml-1.5 w-5 h-5"
                     fill="currentColor"
@@ -125,84 +126,30 @@
                   </svg>
                 </button>
                 <div
-                  id="filterDropdown"
-                  class="z-10 hidden w-48 p-3 bg-white rounded-lg shadow dark:bg-gray-700"
+                  id="DateFilterDropdown"
+                  class="z-50 hidden w-max p-3 bg-white rounded-lg shadow dark:bg-gray-700"
                 >
-                  <h6
-                    class="mb-3 text-sm font-medium text-gray-900 dark:text-white"
+                  <div class="flex items-center gap-2 w-full">
+                    <input
+                      type="date"
+                      id="from-date"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2"
+                    />
+
+                    <span>to</span>
+
+                    <input
+                      type="date"
+                      id="to-date"
+                      class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2"
+                    />
+                  </div>
+                  <button
+                    id="submitDateButton"
+                    class="w-full mt-3 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-colors"
                   >
-                    Choose brand
-                  </h6>
-                  <ul
-                    class="space-y-2 text-sm"
-                    aria-labelledby="filterDropdownButton"
-                  >
-                    <li class="flex items-center">
-                      <input
-                        id="apple"
-                        type="checkbox"
-                        value=""
-                        class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                      />
-                      <label
-                        for="apple"
-                        class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
-                        >Apple (56)</label
-                      >
-                    </li>
-                    <li class="flex items-center">
-                      <input
-                        id="fitbit"
-                        type="checkbox"
-                        value=""
-                        class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                      />
-                      <label
-                        for="fitbit"
-                        class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
-                        >Microsoft (16)</label
-                      >
-                    </li>
-                    <li class="flex items-center">
-                      <input
-                        id="razor"
-                        type="checkbox"
-                        value=""
-                        class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                      />
-                      <label
-                        for="razor"
-                        class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
-                        >Razor (49)</label
-                      >
-                    </li>
-                    <li class="flex items-center">
-                      <input
-                        id="nikon"
-                        type="checkbox"
-                        value=""
-                        class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                      />
-                      <label
-                        for="nikon"
-                        class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
-                        >Nikon (12)</label
-                      >
-                    </li>
-                    <li class="flex items-center">
-                      <input
-                        id="benq"
-                        type="checkbox"
-                        value=""
-                        class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
-                      />
-                      <label
-                        for="benq"
-                        class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-100"
-                        >BenQ (74)</label
-                      >
-                    </li>
-                  </ul>
+                    Find
+                  </button>
                 </div>
               </div>
             </div>
@@ -311,65 +258,63 @@
     </section>
 
     <div
-  id="modal"
-  class="hidden fixed inset-0 z-50 flex items-center justify-center"
->
-  <!-- Overlay -->
-  <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-
-  <!-- Modal -->
-  <div class="relative w-full max-w-lg rounded-xl bg-white p-6 shadow-2xl">
-    <button
-      id="closeModal"
-      class="absolute right-4 top-4 text-xl font-bold hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+      id="modal"
+      class="hidden fixed inset-0 z-50 flex items-center justify-center"
     >
-      ✕
-    </button>
+      <!-- Overlay -->
+      <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
 
-    <h2 class="text-2xl font-semibold mb-6">Add Application</h2>
+      <!-- Modal -->
+      <div class="relative w-full max-w-lg rounded-xl bg-white p-6 shadow-2xl">
+        <button
+          id="closeModal"
+          class="absolute right-4 top-4 text-xl font-bold hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+        >
+          ✕
+        </button>
 
-    <form id="addDetailsForm" class="space-y-4">
+        <h2 class="text-2xl font-semibold mb-6">Add Application</h2>
 
-      <div>
-        <label class="block mb-2 text-sm font-medium">Company Name</label>
-        <input
-          type="text"
-          id="company_name"
-          class="w-full rounded-lg border px-3 py-2"
-          required
-        />
+        <form id="addDetailsForm" class="space-y-4">
+          <div>
+            <label class="block mb-2 text-sm font-medium">Company Name</label>
+            <input
+              type="text"
+              id="company_name"
+              class="w-full rounded-lg border px-3 py-2"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="block mb-2 text-sm font-medium">Role</label>
+            <input
+              type="text"
+              id="role"
+              class="w-full rounded-lg border px-3 py-2"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="block mb-2 text-sm font-medium">Resume Name</label>
+            <input
+              type="text"
+              id="resume_name"
+              class="w-full rounded-lg border px-3 py-2"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+          >
+            Save
+          </button>
+        </form>
       </div>
-
-      <div>
-        <label class="block mb-2 text-sm font-medium">Role</label>
-        <input
-          type="text"
-          id="role"
-          class="w-full rounded-lg border px-3 py-2"
-          required
-        />
-      </div>
-
-      <div>
-        <label class="block mb-2 text-sm font-medium">Resume Name</label>
-        <input
-          type="text"
-          id="resume_name"
-          class="w-full rounded-lg border px-3 py-2"
-          required
-        />
-      </div>
-
-      <button
-        type="submit"
-        class="w-full md:w-auto flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-      >
-        Save
-      </button>
-
-    </form>
-  </div>
-</div>
+    </div>
   </body>
 
   <script src="html_script.js"></script>

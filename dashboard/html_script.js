@@ -7,9 +7,11 @@ const state = {
   searchTimeout: null,
   searchQuery: "",
   resume_version: "",
-}
+  fromDate: "",
+  toDate: "",
+};
 
-// Side effect 
+// Side effect
 function setupStaticEventListeners() {
   document.getElementById("addButton").addEventListener("click", () => {
     document.getElementById("modal").classList.remove("hidden");
@@ -41,6 +43,12 @@ function setupStaticEventListeners() {
 
       loadData(1);
     }, 300);
+  });
+
+  document.getElementById("submitDateButton").addEventListener("click", () => {
+    state.fromDate = document.getElementById("from-date").value;
+    state.toDate = document.getElementById("to-date").value;
+    loadData(1);
   });
 }
 
@@ -275,13 +283,34 @@ async function saveToDB(payload) {
 // Loading data
 async function loadData(page = 1) {
   state.currentPage = page;
-  const response = await fetch(
-    `http://127.0.0.1:8000/get_data?page=${page}&limit=${state.limit}&search=${encodeURIComponent(state.searchQuery)}&filter_resume=${encodeURIComponent(state.resume_version)}`,
-    {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
+
+  const params = new URLSearchParams({
+    page: page,
+    limit: state.limit,
+  });
+
+  if (state.searchQuery) {
+    params.append("search", state.searchQuery);
+  }
+
+  if (state.resume_version) {
+    params.append("filter_resume", state.resume_version);
+  }
+
+  if (state.fromDate) {
+    params.append("from_date", state.fromDate);
+  }
+
+  if (state.toDate) {
+    params.append("to_date", state.toDate);
+  }
+
+  const response = await fetch(`http://127.0.0.1:8000/get_data?${params}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+  });
 
   const data = await response.json();
   const resume_list = data.resume_list;

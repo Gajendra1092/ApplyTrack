@@ -2,12 +2,13 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from langchain_google_genai import ChatGoogleGenerativeAI
-from datetime import datetime
+from datetime import datetime, date
 from langchain.agents import create_agent
 import json
 import sqlite3
 from dotenv import load_dotenv
 import os
+
 
 load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -126,9 +127,16 @@ async def storingInDb(request: Request):
     return True
 
 @app.get("/get_data")
-async def get_data(page: int = 1, limit: int = 10, search: str = "", filter_resume: str = ""):
+async def get_data(page: int = 1, limit: int = 10, search: str = "", filter_resume: str = "" , from_date: date | None = None,
+    to_date: date | None = None):
 
     filter_resume = filter_resume or None
+    from_date = from_date.isoformat() if from_date else None
+    to_date = to_date.isoformat() if to_date else None
+
+    from_date = from_date or None
+    to_date = to_date or None
+
     offset = (page - 1) * limit
     search = f"%{search}%"
 
@@ -138,25 +146,43 @@ async def get_data(page: int = 1, limit: int = 10, search: str = "", filter_resu
 
         # Total records
         cursor.execute(
-                """
-                SELECT COUNT(*)
-                FROM applications
-                WHERE
-                    (? IS NULL OR Resume_name = ?)
-                    AND (
-                        Company_name LIKE ?
-                        OR Role LIKE ?
-                        OR Resume_name LIKE ?
-                    )
-                """,
-                (
-                    filter_resume,
-                    filter_resume,
-                    search,
-                    search,
-                    search
+            """
+            SELECT COUNT(*)
+            FROM applications
+            WHERE
+                (? IS NULL OR Resume_name = ?)
+
+                AND (
+                    Company_name LIKE ?
+                    OR Role LIKE ?
+                    OR Resume_name LIKE ?
                 )
+
+                AND (
+                    ? IS NULL
+                    OR DATE(Created_at) >= DATE(?)
                 )
+
+                AND (
+                    ? IS NULL
+                    OR DATE(Created_at) <= DATE(?)
+                )
+            """,
+            (
+                filter_resume,
+                filter_resume,
+
+                search,
+                search,
+                search,
+
+                from_date,
+                from_date,
+
+                to_date,
+                to_date
+            )
+        )
                 
         total = cursor.fetchone()[0]  # extract data from tuple : (count,) --> count
 
@@ -167,29 +193,49 @@ async def get_data(page: int = 1, limit: int = 10, search: str = "", filter_resu
         resume_list = cursor.fetchall()
 
         cursor.execute(
-                """
-                SELECT *
-                FROM applications
-                WHERE
-                    (? IS NULL OR Resume_name = ?)
-                    AND (
-                        Company_name LIKE ?
-                        OR Role LIKE ?
-                        OR Resume_name LIKE ?
-                    )
-                ORDER BY Created_at DESC
-                LIMIT ? OFFSET ?
-                """,
-                (
-                    filter_resume,
-                    filter_resume,
-                    search,
-                    search,
-                    search,
-                    limit,
-                    offset
+            """
+            SELECT *
+            FROM applications
+            WHERE
+                (? IS NULL OR Resume_name = ?)
+
+                AND (
+                    Company_name LIKE ?
+                    OR Role LIKE ?
+                    OR Resume_name LIKE ?
                 )
+
+                AND (
+                    ? IS NULL
+                    OR DATE(Created_at) >= DATE(?)
+                )
+
+                AND (
+                    ? IS NULL
+                    OR DATE(Created_at) <= DATE(?)
+                )
+
+            ORDER BY Created_at DESC
+            LIMIT ? OFFSET ?
+            """,
+            (
+                filter_resume,
+                filter_resume,
+
+                search,
+                search,
+                search,
+
+                from_date,
+                from_date,
+
+                to_date,
+                to_date,
+
+                limit,
+                offset
             )
+        )
         
         rows = cursor.fetchall()
 
