@@ -126,8 +126,9 @@ async def storingInDb(request: Request):
     return True
 
 @app.get("/get_data")
-async def get_data(page: int = 1, limit: int = 10, search: str = ""):
+async def get_data(page: int = 1, limit: int = 10, search: str = "", filter_resume: str = ""):
 
+    filter_resume = filter_resume or None
     offset = (page - 1) * limit
     search = f"%{search}%"
 
@@ -137,45 +138,70 @@ async def get_data(page: int = 1, limit: int = 10, search: str = ""):
 
         # Total records
         cursor.execute(
-                """SELECT COUNT(*) FROM applications WHERE
-                    Company_name LIKE ?
-                    OR Role LIKE ?
-                    OR Resume_name LIKE ?
-                """,(
+                """
+                SELECT COUNT(*)
+                FROM applications
+                WHERE
+                    (? IS NULL OR Resume_name = ?)
+                    AND (
+                        Company_name LIKE ?
+                        OR Role LIKE ?
+                        OR Resume_name LIKE ?
+                    )
+                """,
+                (
+                    filter_resume,
+                    filter_resume,
                     search,
                     search,
                     search
-                    )
+                )
                 )
                 
         total = cursor.fetchone()[0]  # extract data from tuple : (count,) --> count
 
-        cursor.execute("""
+        cursor.execute(
+                """SELECT Distinct(Resume_name) FROM applications;
+                """)
+
+        resume_list = cursor.fetchall()
+
+        cursor.execute(
+                """
                 SELECT *
                 FROM applications
                 WHERE
-                    Company_name LIKE ?
-                    OR Role LIKE ?
-                    OR Resume_name LIKE ?
+                    (? IS NULL OR Resume_name = ?)
+                    AND (
+                        Company_name LIKE ?
+                        OR Role LIKE ?
+                        OR Resume_name LIKE ?
+                    )
                 ORDER BY Created_at DESC
                 LIMIT ? OFFSET ?
-            """, (
-                search,
-                search,
-                search,
-                limit,
-                offset
+                """,
+                (
+                    filter_resume,
+                    filter_resume,
+                    search,
+                    search,
+                    search,
+                    limit,
+                    offset
                 )
-        )
+            )
         
         rows = cursor.fetchall()
 
     return {
-        "applications": [dict(row) for row in rows],  # list of dict
+        "applications": [dict(row) for row in rows],# list of dict
+        "resume_list": [resume[0] for resume in resume_list], # list of resume names
         "total": total,
         "page": page,
         "limit": limit
         } 
+
+
 
 
 
