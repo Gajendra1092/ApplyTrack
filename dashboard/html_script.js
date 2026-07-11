@@ -1,15 +1,16 @@
+// State
 const state = {
   currentPage: 1,
   totalPages: 0,
-  limit: 2,
+  limit: 5,
   totalRecords: 0,
   searchTimeout: null,
   searchQuery: "",
-  resume_version: ""
-};
+  resume_version: "",
+}
 
-function setupStaticEventListeners(){
-
+// Side effect 
+function setupStaticEventListeners() {
   document.getElementById("addButton").addEventListener("click", () => {
     document.getElementById("modal").classList.remove("hidden");
   });
@@ -20,7 +21,7 @@ function setupStaticEventListeners(){
 
   const form = document.getElementById("addDetailsForm");
 
-  form.addEventListener("submit", () => {
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
     const payload = {
       Company_name: document.getElementById("company_name").value,
@@ -63,7 +64,6 @@ function addingEventListeners() {
     });
   });
 
-
   document.querySelectorAll(".resumeFilter-btn").forEach((button) => {
     button.addEventListener("click", () => {
       const filter_resume_name = button.dataset.rName;
@@ -71,56 +71,31 @@ function addingEventListeners() {
       loadData(1);
     });
   });
-      
 }
 
+// Rendering Functions
 // Just add buttons in resume Drop-Down
-function listResume(list){
-    const resumeDropDown = document.getElementById("resumeDropDownList");
-    resumeDropDown.innerHTML = "";
-    resumeDropDown.innerHTML = `
+function listResume(list) {
+  const resumeDropDown = document.getElementById("resumeDropDownList");
+  resumeDropDown.innerHTML = "";
+  resumeDropDown.innerHTML = `
     <li>
       <button
-        class="resumeFilter-btn w-full text-left block py-2 px-4 hover:bg-gray-100"
+        class="resumeFilter-btn w-full whitespace-nowrap text-left block py-2 px-4 hover:bg-gray-100"
         data-r-name=""
       >
         All Resumes
       </button>
     </li>
   `;
-    list.forEach((ind_resume)=>{
-        resumeDropDown.innerHTML += `<li>
+  list.forEach((ind_resume) => {
+    resumeDropDown.innerHTML += `<li>
                       <button
-                        class="resumeFilter-btn w-full text-left block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" data-r-name="${ind_resume}"
+                        class="resumeFilter-btn  whitespace-nowrap w-full text-left block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" data-r-name="${ind_resume}"
                         >${ind_resume}</button
                       >
-                    </li>`
-    });
-}
-
-// Store Data in DB
-async function saveToDB(payload) {
-  try {
-    const response = await fetch("http://127.0.0.1:8000/store-to-db", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to save application");
-    }
-
-    document.getElementById("addDetailsForm").reset();
-    document.getElementById("modal").classList.add("hidden");
-
-    loadData(1);
-
-  } catch (error) {
-    console.error("Failed to save form:", error);
-  }
+                    </li>`;
+  });
 }
 
 function renderTableFooter() {
@@ -208,9 +183,17 @@ function renderTableFooter() {
             
             `;
 
+  const startRecord =
+    state.totalRecords === 0 ? 0 : (state.currentPage - 1) * state.limit + 1;
+
+  const endRecord = Math.min(
+    state.totalRecords,
+    state.currentPage * state.limit,
+  );
+
   left_footer.innerHTML += `
         Showing
-        <span class="font-semibold text-gray-900 dark:text-white">${(state.currentPage - 1) * state.limit + 1}-${Math.min(state.totalRecords, state.currentPage * state.limit)}</span>
+        <span class="font-semibold text-gray-900 dark:text-white">${startRecord}-${endRecord}</span>
         of
         <span class="font-semibold text-gray-900 dark:text-white">${state.totalRecords}</span>`;
 }
@@ -264,6 +247,32 @@ function renderTable(data) {
   addingEventListeners();
 }
 
+//APIs
+// Store Data in DB
+async function saveToDB(payload) {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/store-to-db", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to save application");
+    }
+
+    document.getElementById("addDetailsForm").reset();
+    document.getElementById("modal").classList.add("hidden");
+
+    loadData(1);
+  } catch (error) {
+    console.error("Failed to save form:", error);
+  }
+}
+
+// Loading data
 async function loadData(page = 1) {
   state.currentPage = page;
   const response = await fetch(
