@@ -73,6 +73,7 @@ document.getElementById('saveForm').addEventListener('submit', async (event) => 
       return;
     }
     
+    
     throw new Error('Save failed');
   } catch (error) {
     console.error('Failed to save form:', error);
